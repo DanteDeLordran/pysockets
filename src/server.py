@@ -1,6 +1,4 @@
 import socket
-
-from _typeshed import ReadableBuffer
 import threading
 
 HOST = "0.0.0.0"
@@ -14,7 +12,7 @@ clients: list[socket.socket] = []
 nicknames = []
 
 
-def broadcast(message: ReadableBuffer) -> None:
+def broadcast(message: bytes) -> None:
     for client in clients:
         client.send(message)
 
@@ -42,13 +40,13 @@ def recieve() -> None:
         client, address = server.accept()
         print(f"Connected with {address}")
 
-        client.send("Nick".encode("ascii"))
+        client.send("NICK".encode("ascii"))
         nickname = client.recv(1024).decode("ascii")
         nicknames.append(nickname)
+        clients.append(client)
 
         print(f"Nickname of the client is : {nickname}")
         broadcast(f"{nickname} joined the chat".encode("ascii"))
-
         client.send("Connected to the server".encode("ascii"))
 
         thread = threading.Thread(target=handle, args=(client,))
