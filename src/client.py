@@ -1,6 +1,8 @@
 import socket
 import threading
 
+from rich import print
+
 
 class Client:
     def __init__(self, host: str, port: int, nickname: str):
@@ -16,7 +18,8 @@ class Client:
                 if message == "NICK":
                     self.client.send(self.nickname.encode("ascii"))
                 else:
-                    print(message)
+                    print(f"[bold blue]{message}")
+
             except Exception as e:
                 print(f"Error ocurred due to: {e}")
                 self.client.close()

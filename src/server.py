@@ -1,5 +1,8 @@
 import socket
 import threading
+from datetime import datetime
+
+from rich import print
 
 
 class Server:
@@ -34,14 +37,16 @@ class Server:
     def recieve(self) -> None:
         while True:
             client, address = self.server.accept()
-            print(f"Connected with {address}")
+            print(f"[bold red]{datetime.now()} >> [bold blue]Connected with {address}")
 
             client.send("NICK".encode("ascii"))
             nickname = client.recv(1024).decode("ascii")
             self.nicknames.append(nickname)
             self.clients.append(client)
 
-            print(f"Nickname of the client is : {nickname}")
+            print(
+                f"[bold red]{datetime.now()} >> [bold blue]Nickname of the client is : {nickname}"
+            )
             self.broadcast(f"{nickname} joined the chat".encode("ascii"))
             client.send("Connected to the server".encode("ascii"))
 
@@ -51,5 +56,5 @@ class Server:
     def start(self):
         self.server.bind((self.host, self.port))
         self.server.listen()
-        print(f"Server is listening on port: {self.port}")
+        print(f"[bold blue]Server is listening on port: {self.port}")
         self.recieve()
